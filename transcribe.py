@@ -24,16 +24,6 @@ import time
 import pyaudio
 import websocket
 from websocket._abnf import ABNF
-from ibm_watson import TextToSpeechV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
-apikey = 'lXA7cqe_cNRSRM0RqL6ulnoDDkCjQWGlkd4J6goTbYMY'
-url = 'https://api.us-south.text-to-speech.watson.cloud.ibm.com/instances/e62c345a-ecaa-4f6b-801e-c02ab0961249'
-
-# Setup Service
-authenticator = IAMAuthenticator(apikey)
-tts = TextToSpeechV1(authenticator=authenticator)
-tts.set_service_url(url)
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -127,20 +117,6 @@ def on_message(self, msg):
         if data["results"][0]["final"]:
             FINALS.append(data)
             LAST = None
-            
-            with open('myVoice.txt', 'r') as f:
-               text = f.readlines()
-               text = [line.replace('\n','') for line in text]
-               text = ''.join(str(line) for line in text)
-
-
-            with open('./myVoice.mp3', 'wb') as audio_file:
-                 res = tts.synthesize(text, accept='audio/mp3', voice='en-GB_JamesV3Voice').get_result()
-                 audio_file.write(res.content)
-            playsound ('myaudio.mp3')
-      
-      
-      
         else:
             LAST = data
         # This prints out the current fragment that we are working on
